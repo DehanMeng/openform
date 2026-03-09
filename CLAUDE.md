@@ -27,10 +27,15 @@ app/
 │   ├── taking/page.tsx               # 答题页（一题一屏）
 │   └── result/[id]/page.tsx          # 结果页
 ├── types/page.tsx                    # 16 种类型总览
-├── admin/codes/page.tsx              # 访问码管理后台
+├── admin/
+│   ├── login/page.tsx                # 管理员登录页 🔐
+│   └── codes/page.tsx                # 访问码管理后台 🔐
 └── api/
     ├── access/validate/route.ts      # 验证访问码
-    └── admin/codes/generate/route.ts # 生成访问码
+    ├── auth/
+    │   ├── login/route.ts            # 管理员登录 🔐
+    │   └── logout/route.ts           # 管理员登出 🔐
+    └── admin/codes/generate/route.ts # 生成访问码 🔐
 
 lib/
 ├── mbti/
@@ -44,27 +49,68 @@ lib/
 supabase/
 └── init.sql                          # 数据库初始化脚本
 
-middleware.ts                          # 访问控制中间件
+proxy.ts                               # 访问控制代理（Next.js 16）
 ```
 
 ## 环境配置
 
 ### Supabase 配置（已完成 ✅）
 
-`.env.local` 已配置（参考 `.env.example`）：
+**项目信息**：
+- Project URL: `https://reqenzcgnhsvdouqwowy.supabase.co`
+- Region: Northeast Asia (Tokyo)
+
+**环境变量**（`.env.local` 已配置）：
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=你的项目URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=你的密钥
 ```
 
-数据库已初始化（执行 `supabase/init.sql`）：
-- ✅ `access_codes` 表
-- ✅ `access_code_logs` 表
-- ✅ `mbti_test_results` 表
-- ✅ 数据库函数和 RLS 策略
-- ✅ 测试访问码：`TEST-CODE-2024`（999 次，1 年有效）
+**数据库状态**（`supabase/init.sql` 已执行）：
+- ✅ `access_codes` 表（14 字段，4 索引）
+- ✅ `access_code_logs` 表（访问日志）
+- ✅ `mbti_test_results` 表（测试结果）
+- ✅ 数据库函数：`is_access_code_valid()`, `use_access_code()`
+- ✅ RLS 安全策略
+- ✅ 测试数据：4 个测试访问码
 
-### 启动项目
+### Vercel 部署（已完成 ✅）
+
+**部署状态**：🟢 已上线
+
+**环境变量配置**（Vercel Dashboard）：
+```
+NEXT_PUBLIC_SUPABASE_URL=https://reqenzcgnhsvdouqwowy.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...（已配置）
+ADMIN_PASSWORD=生产环境密码（已配置）
+```
+
+**构建状态**：
+- ✅ TypeScript 类型检查通过
+- ✅ Next.js 16 构建成功
+- ✅ 17 个页面全部静态化/动态渲染
+- ✅ 无警告，无错误
+
+### 管理员认证（已完成 ✅）
+
+**认证方式**：环境变量密码 + Cookie Session
+
+**配置步骤**：
+1. 本地：在 `.env.local` 设置 `ADMIN_PASSWORD`
+2. 生产：在 Vercel Dashboard 添加环境变量
+
+**访问**：
+- 登录页面：`/admin/login`
+- 管理后台：`/admin/codes`（需登录）
+
+**保护机制**：
+- ✅ proxy.ts 中间件拦截所有 `/admin/*` 路径（除登录页）
+- ✅ HTTP-only Cookie（7天有效期）
+- ✅ 所有管理员 API 需要验证
+
+**详细文档**：`docs/ADMIN_AUTH.md`
+
+### 本地开发
 
 ```bash
 npm install
@@ -76,7 +122,7 @@ npm run dev
 
 ### 1. 访问控制系统
 
-**中间件保护**（`middleware.ts`）：
+**代理中间件保护**（`proxy.ts`）：
 - 保护路径：`/`, `/test/*`, `/types`
 - 检查 `access_token` Cookie
 - 未授权自动重定向到 `/access`
@@ -160,15 +206,26 @@ const code = generateAccessCode()
 
 ## 当前状态
 
-### ✅ 已完成
+### ✅ 已完成（v2.1.0 - 2026-03-09）
 
-- 5 个核心页面（首页、访问码、测试、结果、类型总览）
-- MBTI 计算引擎（400+ 行）
-- 访问码系统（生成、验证、管理）
-- 管理员后台
-- Supabase 完整配置
-- 中间件访问控制
-- 测试数据和测试访问码
+**核心功能**：
+- ✅ 5 个核心页面（首页、访问码、测试、结果、类型总览）
+- ✅ MBTI 计算引擎（400+ 行）
+- ✅ 访问码系统（生成、验证、管理）
+- ✅ 管理员后台（统计、生成、列表）
+
+**基础设施**：
+- ✅ Supabase 数据库配置完成
+- ✅ 代理中间件访问控制（Next.js 16 规范）
+- ✅ Vercel 生产环境部署
+- ✅ 测试数据和访问码（4 个）
+- ✅ TypeScript 严格类型检查通过
+- ✅ Next.js 16 Suspense 边界配置
+
+**项目链接**：
+- GitHub: https://github.com/DehanMeng/openform
+- Vercel: 已部署（自动分配域名）
+- Supabase: https://supabase.com/dashboard/project/reqenzcgnhsvdouqwowy
 
 ### ⚠️ 待完成
 
@@ -193,7 +250,7 @@ const code = generateAccessCode()
 ### 访问码系统
 - `lib/access-code.ts` - 工具函数
 - `app/api/access/validate/route.ts` - 验证 API
-- `middleware.ts` - 访问控制
+- `proxy.ts` - 访问控制代理
 
 ### 数据库
 - `supabase/init.sql` - 完整初始化脚本（已执行）
@@ -213,25 +270,61 @@ const code = generateAccessCode()
 
 ## 测试访问
 
-**测试访问码**：`TEST-CODE-2024`
-- 有效期：1 年
-- 使用次数：999 次
-- 价格：免费
+### 本地测试
+1. `npm run dev` 启动本地服务器
+2. 访问 http://localhost:3000
+3. 输入测试访问码：`TEST-CODE-2024`
 
-**测试流程**：
-1. 访问 http://localhost:3000
-2. 自动跳转到 `/access`
-3. 输入 `TEST-CODE-2024`
-4. 验证成功后开始测试
+### 线上测试
+1. 访问 Vercel 部署的 URL
+2. 输入测试访问码：`TEST-CODE-2024`
+3. 完成 12 题测试（当前版本）
+
+**可用测试访问码**：
+- `TEST-CODE-2024` - 免费，999次，1年有效 ⭐
+- `DEMO-BASIC-001` - ¥9.9，1次，24小时
+- `DEMO-STAND-002` - ¥19.9，3次，48小时
+- `DEMO-PREMM-003` - ¥29.9，5次，7天
 
 ## 参考文档
 
-- `CONFIGURATION_COMPLETE.md` - Supabase 配置完成报告
-- `ACCESS_CODE_USAGE.md` - 访问码使用指南
-- `DATABASE_SCHEMA.md` - 数据库设计文档
+### 主文档
+- `CLAUDE.md` - AI 项目文档（本文件）
+- `README.md` - GitHub 项目说明
+- `PROJECT_JOURNEY.md` - 完整开发历程记录 ⭐
+
+### 归档文档（`docs/archive/`）
+- `DATABASE_SCHEMA.md` - 数据库设计详细文档
+- `ACCESS_CODE_DESIGN.md` - 访问码系统设计文档
 - `MBTI_IMPLEMENTATION_PLAN.md` - 开发任务清单
 
 ---
 
-**版本**：v2.0.0 (2026-03-09)
-**状态**：核心功能完成，Supabase 已配置，题库待扩展
+## 版本历史
+
+### v2.1.0 (2026-03-09 19:00) - 🚀 生产环境部署
+- ✅ Vercel 部署成功
+- ✅ 修复所有 TypeScript 类型错误
+- ✅ 修复 Next.js 16 Suspense 边界问题
+- ✅ 迁移 middleware.ts → proxy.ts
+- ✅ 构建优化（无警告，无错误）
+
+### v2.0.0 (2026-03-09 13:00) - Supabase 配置完成
+- ✅ 配置 Supabase 数据库
+- ✅ 执行数据库初始化脚本
+- ✅ 创建测试访问码
+- ✅ 验证 API 功能正常
+
+### v1.0.0 (2026-03-08) - 核心功能开发
+- ✅ 从 OpenForm 改造为 MBTI 测试应用
+- ✅ 实现访问码付费验证系统
+- ✅ 创建 5 个核心页面
+- ✅ 实现 MBTI 计算引擎
+- ✅ 设计完整数据库 schema
+- ✅ 移除普通用户登录要求
+
+---
+
+**当前版本**：v2.1.0
+**状态**：🟢 已上线，核心功能完整，题库待扩展（P0）
+**最后更新**：2026-03-09 19:00

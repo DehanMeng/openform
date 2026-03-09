@@ -47,10 +47,10 @@ export default function TypesPage() {
                       className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 hover:bg-white/15 transition group"
                     >
                       <div
-                        className="w-16 h-16 rounded-full flex items-center justify-center mb-4 text-2xl"
+                        className="w-16 h-16 rounded-full flex items-center justify-center mb-4 text-xl font-bold"
                         style={{ backgroundColor: `${profile.color}20`, color: profile.color }}
                       >
-                        {profile.icon_emoji}
+                        {type}
                       </div>
 
                       <h3 className="text-2xl font-bold text-white mb-2">

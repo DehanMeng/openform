@@ -101,8 +101,8 @@ export function calculateDimensionScores(
   answers: Record<string, AnswerValue>
 ): { dimensionScores: DimensionScores; polarityScores: DimensionPolarity } {
   const dimensions: MBTIDimension[] = ['EI', 'SN', 'TF', 'JP']
-  const dimensionScores = {} as DimensionScores
-  const polarityScores = {} as DimensionPolarity
+  const tempDimensionScores: any = {}
+  const tempPolarityScores: any = {}
 
   for (const dimension of dimensions) {
     // 筛选该维度的所有问题
@@ -124,18 +124,21 @@ export function calculateDimensionScores(
     // 负数表示左倾向,正数表示右倾向
     const score = normalized.right - normalized.left
 
-    dimensionScores[dimension] = {
+    tempDimensionScores[dimension] = {
       score,
       type: dominantType,
       percentage: dominantPercentage
     }
 
     // 保存极性分数
-    polarityScores[leftType] = normalized.left
-    polarityScores[rightType] = normalized.right
+    tempPolarityScores[leftType] = normalized.left
+    tempPolarityScores[rightType] = normalized.right
   }
 
-  return { dimensionScores, polarityScores }
+  return {
+    dimensionScores: tempDimensionScores as DimensionScores,
+    polarityScores: tempPolarityScores as DimensionPolarity
+  }
 }
 
 /**

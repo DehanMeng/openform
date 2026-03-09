@@ -48,14 +48,14 @@ export async function generateAccessCodes(options: {
     const code = generateAccessCode()
 
     const { error } = await supabase
-      .from('access_codes')
+      .from('access_codes' as any)
       .insert({
         code,
         expires_at: expiresAt.toISOString(),
         max_uses: options.maxUses,
         price: options.price,
         notes: options.notes,
-      })
+      } as any)
 
     if (!error) {
       codes.push(code)
@@ -82,7 +82,7 @@ export async function validateAccessCode(code: string): Promise<{
   const formattedCode = code.trim().toUpperCase()
 
   // 调用数据库函数验证
-  const { data, error } = await supabase.rpc('is_access_code_valid', {
+  const { data, error } = await (supabase as any).rpc('is_access_code_valid', {
     p_code: formattedCode,
   })
 
@@ -119,7 +119,7 @@ export async function useAccessCode(
 
   const formattedCode = code.trim().toUpperCase()
 
-  const { data, error } = await supabase.rpc('use_access_code', {
+  const { data, error } = await (supabase as any).rpc('use_access_code', {
     p_code: formattedCode,
     p_ip: ipAddress,
   })
@@ -152,14 +152,14 @@ export async function logAccessAttempt(options: {
 }) {
   const supabase = await createClient()
 
-  await supabase.from('access_code_logs').insert({
+  await supabase.from('access_code_logs' as any).insert({
     code: options.code.trim().toUpperCase(),
     action: options.action,
     success: options.success,
     ip_address: options.ipAddress,
     user_agent: options.userAgent,
     error_message: options.errorMessage,
-  })
+  } as any)
 }
 
 /**
@@ -173,7 +173,7 @@ export async function getAccessCodes(options: {
   const supabase = await createClient()
 
   let query = supabase
-    .from('access_codes')
+    .from('access_codes' as any)
     .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
 
@@ -182,11 +182,10 @@ export async function getAccessCodes(options: {
     query = query
       .eq('is_active', true)
       .gt('expires_at', new Date().toISOString())
-      .lt('current_uses', supabase.raw('max_uses'))
   } else if (options.status === 'expired') {
     query = query.lt('expires_at', new Date().toISOString())
   } else if (options.status === 'used') {
-    query = query.gte('current_uses', supabase.raw('max_uses'))
+    query = query.eq('is_active', false)
   }
 
   // 分页
@@ -217,25 +216,25 @@ export async function getAccessCodeStats() {
 
   const [totalResult, activeResult, usedResult, expiredResult, revenueResult] =
     await Promise.all([
-      supabase.from('access_codes').select('id', { count: 'exact', head: true }),
+      supabase.from('access_codes' as any).select('id', { count: 'exact', head: true }),
       supabase
-        .from('access_codes')
+        .from('access_codes' as any)
         .select('id', { count: 'exact', head: true })
         .eq('is_active', true)
         .gt('expires_at', new Date().toISOString()),
       supabase
-        .from('access_codes')
+        .from('access_codes' as any)
         .select('id', { count: 'exact', head: true })
-        .gte('current_uses', supabase.raw('max_uses')),
+        .eq('is_active', false),
       supabase
-        .from('access_codes')
+        .from('access_codes' as any)
         .select('id', { count: 'exact', head: true })
         .lt('expires_at', new Date().toISOString()),
-      supabase.from('access_codes').select('price'),
+      supabase.from('access_codes' as any).select('price'),
     ])
 
   const totalRevenue = revenueResult.data?.reduce(
-    (sum, item) => sum + (Number(item.price) || 0),
+    (sum, item: any) => sum + (Number(item.price) || 0),
     0
   ) || 0
 

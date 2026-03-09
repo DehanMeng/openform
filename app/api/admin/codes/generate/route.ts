@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import { generateAccessCodes } from '@/lib/access-code'
 
 export async function POST(request: NextRequest) {
   try {
-    // 验证管理员权限（简化版，实际应该检查用户角色）
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    // 验证管理员权限（检查 cookie）
+    const adminSession = request.cookies.get('admin_session')
 
-    if (!user) {
+    if (!adminSession || adminSession.value !== 'authenticated') {
       return NextResponse.json(
-        { error: '未授权访问' },
+        { error: '未授权访问，请先登录' },
         { status: 401 }
       )
     }

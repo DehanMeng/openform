@@ -1,26 +1,24 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import { Button } from '@/components/ui/button'
-import { Brain, Shield } from 'lucide-react'
+import { Brain, Shield, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
-async function getUser() {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    return user
-  } catch {
-    return null
-  }
-}
+export default async function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
+  const cookieStore = await cookies()
+  const adminSession = cookieStore.get('admin_session')
 
-export default async function AdminLoginPage() {
-  const user = await getUser()
-
-  // If already logged in, redirect to dashboard
-  if (user) {
-    redirect('/admin/dashboard')
+  // 如果已登录，重定向到管理后台
+  if (adminSession?.value === 'authenticated') {
+    redirect('/admin/codes')
   }
+
+  const params = await searchParams
+  const error = params.error
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#02332f] via-[#024a3f] to-[#02332f] flex items-center justify-center p-4">
@@ -39,36 +37,32 @@ export default async function AdminLoginPage() {
           </div>
 
           <p className="text-gray-300 text-center mb-8">
-            使用您的管理员账号登录以访问后台管理系统
+            输入管理员密码以访问后台管理系统
           </p>
 
-          {/* Login Form */}
-          <form action="/auth/login" method="post" className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                邮箱
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#277f55] focus:border-transparent"
-                placeholder="admin@example.com"
-              />
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <span className="text-red-400 text-sm">
+                {error === 'invalid' ? '密码错误，请重试' : '登录失败，请稍后再试'}
+              </span>
             </div>
+          )}
 
+          {/* Login Form */}
+          <form action="/api/auth/login" method="post" className="space-y-4">
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                密码
+                管理员密码
               </label>
               <input
                 id="password"
                 name="password"
                 type="password"
                 required
+                autoFocus
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#277f55] focus:border-transparent"
-                placeholder="••••••••"
+                placeholder="请输入管理员密码"
               />
             </div>
 

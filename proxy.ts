@@ -1,8 +1,21 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // 管理员路径保护（优先检查）
+  if (pathname.startsWith('/admin')) {
+    // 允许访问登录页面和 API
+    if (!pathname.startsWith('/admin/login') && !pathname.startsWith('/api/auth')) {
+      const adminSession = request.cookies.get('admin_session')
+
+      // 没有管理员 session，重定向到登录页
+      if (!adminSession || adminSession.value !== 'authenticated') {
+        return NextResponse.redirect(new URL('/admin/login', request.url))
+      }
+    }
+  }
 
   // 需要访问码验证的路径
   const protectedPaths = ['/', '/test', '/types']
@@ -21,13 +34,10 @@ export async function middleware(request: NextRequest) {
         const url = new URL('/access', request.url)
         return NextResponse.redirect(url)
       }
-
-      // TODO: 可以在这里添加访问码有效性验证
-      // 目前仅检查 Cookie 是否存在
     }
   }
 
-  // 管理员路径仍然需要身份验证
+  // Supabase session 更新
   return await updateSession(request)
 }
 

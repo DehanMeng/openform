@@ -1,11 +1,12 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Brain, Clock, CheckCircle2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
-export default function TestPage() {
+function TestPageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const version = searchParams.get('version') || 'full'
@@ -147,5 +148,17 @@ export default function TestPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function TestPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-[#02332f] via-[#024a3f] to-[#02332f] flex items-center justify-center">
+        <div className="text-white text-lg">加载中...</div>
+      </div>
+    }>
+      <TestPageContent />
+    </Suspense>
   )
 }

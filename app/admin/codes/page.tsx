@@ -13,6 +13,7 @@ import {
   TrendingUp,
   DollarSign,
   Loader2,
+  LogOut,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -139,11 +140,16 @@ export default function AdminCodesPage() {
             <Brain className="w-8 h-8 text-[#277f55]" />
             <h1 className="text-xl font-bold text-white">访问码管理</h1>
           </Link>
-          <Link href="/admin/dashboard">
-            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
-              返回后台
+          <form action="/api/auth/logout" method="post">
+            <Button
+              type="submit"
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              退出登录
             </Button>
-          </Link>
+          </form>
         </div>
       </header>
 

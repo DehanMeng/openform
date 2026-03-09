@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Progress } from '@/components/ui/progress'
@@ -20,7 +20,7 @@ const SCALE_LABELS = [
   { value: 7, label: '完全同意' }
 ]
 
-export default function TakingTestPage() {
+function TakingTestContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const version = searchParams.get('version') || 'full'
@@ -270,5 +270,17 @@ export default function TakingTestPage() {
         </div>
       </footer>
     </div>
+  )
+}
+
+export default function TakingTestPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-[#02332f] via-[#024a3f] to-[#02332f] flex items-center justify-center">
+        <div className="text-white text-lg">加载中...</div>
+      </div>
+    }>
+      <TakingTestContent />
+    </Suspense>
   )
 }
