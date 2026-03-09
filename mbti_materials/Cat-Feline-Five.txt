@@ -1,0 +1,113 @@
+Feline Five（猫类五因素性格测试）
+
+  基本信息
+   - 题目数量: 52 题（实际分析使用 48 题）
+   - 评分标准: 7 点 Likert 量表
+     - 1 = 完全不是
+     - 2 = 很少
+     - 3 = 有一些
+     - 4 = 中等
+     - 5 = 相当
+     - 6 = 非常
+     - 7 = 完全是
+
+  完整 52 个性格特征项目
+
+  从研究论文中提取的完整 52 个性格特征（括号内为研究提供的定义）：
+
+   1. Insecure - 似乎容易害怕、跳跃和总体害怕
+   2. Fearful of people - 害怕人
+   3. Suspicious - 怀疑
+   4. Anxious - 焦虑
+   5. Trusting - 信任
+   6. Shy - 害羞
+   7. Calm - 平静
+   8. Stable - 稳定
+   9. Friendly to people - 对人友好
+   10. Tense - 紧张
+   11. Self-assured - 自信
+   12. Bold - 大胆
+   13. Fearful of other cats - 害怕其他猫
+   14. Cool - 冷静
+   15. Excitable - 易兴奋
+   16. Solitary - 孤独
+   17. Bullying - 欺凌
+   18. Dominant - 支配
+   19. Aggressive to other cats - 对其他猫攻击
+   20. Defiant - 叛逆
+   21. Irritable - 易怒
+   22. Gentle - 温柔
+   23. Aggressive to people - 对人攻击
+   24. Jealous - 嫉妒
+   25. Erratic - 反复无常
+   26. Cooperative - 合作
+   27. Submissive - 顺从
+   28. Friendly to other cats - 对其他猫友好
+   29. Reckless - 鲁莽
+   30. Affectionate - 亲切
+   31. Greedy - 贪婪
+   32. Curious - 好奇
+   33. Inventive - 有创造力
+   34. Inquisitive - 好问
+   35. Playful - 爱玩
+   36. Active - 活跃
+   37. Impulsive - 冲动
+   38. Persevering - 坚持
+   39. Vigilant - 警惕
+   40. Constrained - 受限
+   41. Vocal - 爱叫（已排除）
+   42. Eccentric - 古怪（已排除）
+   43. Individualistic - 个性化（已排除）
+   44. Aimless - 无目的
+   45. Decisive - 果断
+   46. Clumsy - 笨拙
+   47. Smart - 聪明
+   48. Deliberate - 审慎
+   49. Distractible - 易分心
+   50. Quitting - 放弃
+   51. Independent - 独立
+   52. Predictable - 可预测
+
+  判断标准（5 个性格维度）
+
+  基于主轴因子分析，52 个特征被归纳为 5 个核心因子（Feline Five）：
+
+  1. Neuroticism（神经质/害羞）
+  特征: 害怕、焦虑、不安全感
+  包含项目: Insecure, Anxious, Fearful of people, Suspicious, Shy, Trusting (反向),
+  Calm (反向), Stable (反向), Tense, Fearful of other cats, Cool (反向)
+  解释: 高神经质的猫更容易害怕、紧张，需要更多的安全感和隐藏空间
+
+  2. Extraversion（外向性）
+  特征: 好奇、活跃、聪明、果断
+  包含项目: Decisive, Smart, Curious, Inquisitive, Playful, Active
+  解释: 高外向性的猫更活跃、好奇、爱玩，需要更多的刺激和探索机会
+
+  3. Dominance（支配性）
+  特征: 支配、攻击、叛逆
+  包含项目: Bullying, Dominant, Aggressive to other cats, Defiant, Irritable, Gentle
+  (反向), Aggressive to people, Jealous, Cooperative (反向), Submissive (反向),
+  Friendly to other cats (反向)
+  解释: 高支配性的猫更可能控制资源、对其他猫攻击，在多猫家庭需要仔细管理
+
+  4. Impulsiveness（冲动性）
+  特征: 冲动、鲁莽、无目的
+  包含项目: Excitable, Impulsive, Aimless, Decisive (反向), Clumsy, Smart (反向),
+  Deliberate (反向), Distractible, Quitting, Independent (反向), Predictable (反向)
+  解释: 高冲动性的猫可能对环境压力反应过度，可能是压力或不适的迹象
+
+  5. Agreeableness（宜人性）
+  特征: 友好、合作、温柔
+  包含项目: Trusting, Friendly to people (反向), Curious, Affectionate, Gentle,
+  Friendly to other cats, Submissive (反向)
+  解释: 低宜人性的猫可能表现出易怒，这可能是潜在疼痛或疾病的迹象
+
+  各维度信度（Cronbach's α）
+   - Neuroticism: 0.90
+   - Extraversion: 0.83
+   - Dominance: 0.85
+   - Impulsiveness: 0.79
+   - Agreeableness: 0.68
+
+  ---
+

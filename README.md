@@ -1,166 +1,82 @@
-# OpenForm
+# MBTI 人格测试 Web 应用
 
-A beautiful, open-source TypeForm alternative. Create engaging forms with a one-question-at-a-time experience.
+一个基于访问码付费的 MBTI 人格测试应用，采用 TypeForm 风格的一题一屏答题体验。
 
-![OpenForm Logo](logo.jpg)
+## 特性
 
-## Features
+- **付费访问控制** - 通过访问码系统控制访问，无需用户注册
+- **一题一屏** - 流畅的答题体验，支持键盘快捷键
+- **科学评分** - 完整的 MBTI 四维度计算引擎
+- **详细分析** - 16 种人格类型完整档案和可视化得分
+- **管理后台** - 访问码生成、管理和统计
 
-- **6 beautiful themes** - Midnight, Ocean, Sunset, Forest, Lavender, Minimal
-- **Keyboard navigation** - Navigate with Enter, arrow keys, and scroll wheel
-- **Mobile-first forms** - Responsive form-taking experience
-- **Secure authentication** - Google OAuth and Magic Link
-- **Response dashboard** - View, search, filter, and export to CSV
-- **13 question types** - Text, multiple choice, rating, file upload, and more
+## 技术栈
 
-## Question types
+- Next.js 16 (App Router) + React 19
+- Supabase (PostgreSQL + Auth)
+- Tailwind CSS v4 + shadcn/ui
+- TypeScript
 
-| Type | Description |
-|------|-------------|
-| Short text | Single line text input |
-| Long text | Multi-line textarea |
-| Dropdown | Select one option |
-| Checkboxes | Select multiple options |
-| Email | Email with validation |
-| Phone | Phone number input |
-| Number | Numeric input |
-| Date | Date picker |
-| Rating | Star rating (1-5) |
-| Opinion scale | Numeric scale (1-10) |
-| Yes/No | Binary choice |
-| File upload | Images and PDFs |
-| Website URL | URL with validation |
+## 快速开始
 
-## Tech stack
-
-- **Framework**: Next.js 16 (App Router)
-- **Database**: Supabase (PostgreSQL)
-- **Auth**: Supabase Auth (Google OAuth + Magic Link)
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Animations**: Framer Motion
-- **File storage**: Cloudflare R2 (optional)
-
-## Getting started
-
-### Prerequisites
-
-- Node.js 18+
-- A Supabase account
-- (Optional) Cloudflare account for file uploads
-
-### 1. Clone and install
+### 1. 安装依赖
 
 ```bash
-git clone https://github.com/yourusername/openform.git
-cd openform
 npm install
 ```
 
-### 2. Set up Supabase
+### 2. 配置 Supabase
 
-1. Create a new project at [supabase.com](https://supabase.com)
-
-2. Run the database schema in SQL Editor:
-   - Copy the contents of `supabase/schema.sql`
-   - Paste and run in Supabase SQL Editor
-
-3. Configure authentication:
-
-   **Enable Google OAuth:**
-   - Go to Authentication, then Providers, then Google
-   - Enable and add your Google OAuth credentials
-   - Get credentials from [Google Cloud Console](https://console.cloud.google.com)
-   - Set redirect URI: `https://YOUR_PROJECT.supabase.co/auth/v1/callback`
-
-   **Configure URLs:**
-   - Go to Authentication, then URL Configuration
-   - Site URL: `http://localhost:3000`
-   - Add redirect URL: `http://localhost:3000/auth/callback`
-
-4. Get your API keys:
-   - Go to Settings, then API
-   - Copy "Project URL" and "anon public" key
-
-### 3. Configure environment variables
+创建 `.env.local` 文件：
 
 ```bash
-cp .env.example .env.local
+NEXT_PUBLIC_SUPABASE_URL=你的项目URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=你的匿名密钥
 ```
 
-Edit `.env.local` with your Supabase credentials:
+### 3. 初始化数据库
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
+在 Supabase Dashboard → SQL Editor 中执行 `supabase/init.sql`
 
-### 4. Run the development server
+### 4. 启动开发服务器
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your app.
+访问 http://localhost:3000
 
-## File uploads (optional)
+### 5. 测试访问
 
-To enable file uploads, configure Cloudflare R2:
+使用测试访问码：`TEST-CODE-2024`
 
-1. Create an R2 bucket in your Cloudflare dashboard
-2. Create an API token with R2 read/write permissions
-3. Add the credentials to `.env.local`:
-
-```env
-R2_ACCOUNT_ID=your-account-id
-R2_ACCESS_KEY_ID=your-access-key
-R2_SECRET_ACCESS_KEY=your-secret-key
-R2_BUCKET_NAME=openform-uploads
-R2_PUBLIC_URL=https://your-bucket.r2.dev
-```
-
-## Deployment
-
-### Vercel (recommended)
-
-1. Push your code to GitHub
-2. Import the repository in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy
-
-Remember to update your Supabase URL Configuration with your production URL.
-
-## Project structure
+## 项目结构
 
 ```
-openform/
-├── app/
-│   ├── (auth)/           # Auth pages (login)
-│   ├── (dashboard)/      # Protected dashboard pages
-│   │   ├── dashboard/    # Forms list
-│   │   ├── forms/        # Form builder and responses
-│   │   └── settings/     # User settings
-│   ├── api/              # API routes
-│   ├── auth/             # Auth callback
-│   └── f/[slug]/         # Public form pages
-├── components/
-│   ├── dashboard/        # Dashboard components
-│   ├── form-builder/     # Form builder components
-│   ├── form-player/      # Form player components
-│   ├── responses/        # Response dashboard
-│   └── ui/               # shadcn/ui components
-├── lib/
-│   ├── supabase/         # Supabase clients
-│   ├── database.types.ts # TypeScript types
-│   ├── questions.ts      # Question type definitions
-│   └── themes.ts         # Theme configurations
-└── supabase/
-    └── schema.sql        # Database schema
+app/
+├── page.tsx                   # 首页
+├── access/page.tsx            # 访问码验证
+├── test/                      # 测试相关页面
+├── admin/codes/page.tsx       # 访问码管理后台
+└── api/                       # API 路由
+
+lib/
+├── mbti/                      # MBTI 核心逻辑
+│   ├── calculator.ts          # 评分引擎
+│   ├── sample-questions.ts    # 题库（⚠️ 仅 12 题）
+│   └── type-profiles.ts       # 16 种类型资料
+└── supabase/                  # Supabase 客户端
 ```
+
+## 待完成
+
+- [ ] 扩展题库到 93 题完整版
+
+## 文档
+
+- [CLAUDE.md](CLAUDE.md) - 完整项目文档
+- [docs/archive/](docs/archive/) - 参考文档归档
 
 ## License
 
-MIT License - feel free to use this for any project.
-
-## Contributing
-
-Contributions are welcome. Please open an issue or pull request.
+MIT
